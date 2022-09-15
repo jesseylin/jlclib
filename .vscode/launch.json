@@ -13,7 +13,6 @@
             "externalConsole": false,
             "MIMode": "lldb",
             "preLaunchTask": "C/C++: clang build active file debugflags",
-            "postDebugTask": "C/C++: make clean"
         }
     ]
 }
