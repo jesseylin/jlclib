@@ -57,13 +57,17 @@ size_t string_rseekc(const struct jString *s, const char c)
     return ind;
 }
 
-struct jString *string_slice(struct jString *s1, const struct jString *s2, const size_t offset, const size_t len)
+struct jString *string_view(const struct jString *s, const size_t offset, const size_t len)
 {
-    s1->ch_arr = s2->ch_arr;
-    s1->offset = s2->offset + offset;
-    s1->len = len;
+    // Returns a new jString which is a slice of s
+    // Caller must free
+    struct jString *out = malloc(sizeof(*out));
 
-    return s1;
+    out->ch_arr = s->ch_arr;
+    out->offset = s->offset + offset;
+    out->len = len;
+
+    return out;
 }
 
 struct jString *string_insert(struct jString *s1, const struct jString *s2, const size_t offset)
@@ -122,14 +126,16 @@ int string_run_tests(void)
     // string_rseekc
     assert(string_rseekc(str, 'l') == 9);
 
-    // string_slice
-    struct jString *slice = malloc(sizeof(*slice));
-    slice = string_slice(slice, str, 6, 5);
+    // string_view
+    struct jString *slice = string_view(str, 6, 5);
     c = malloc((slice->len + 1) * sizeof(*c));
     c = string_realize(c, slice);
     assert(!strcmp(c, "world"));
     free(c);
-    slice = string_slice(slice, slice, 1, 3);
+
+    struct jString *tmp = slice;
+    slice = string_view(tmp, 1, 3);
+    free(tmp);
     c = malloc((slice->len + 1) * sizeof(*c));
     c = string_realize(c, slice);
     assert(!strcmp(c, "orl"));

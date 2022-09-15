@@ -63,7 +63,9 @@ char *transform_function(const char *line)
 
     struct jString *tail_s = malloc(sizeof(*tail_s));
     tail_s = string_create(tail_s, &line[name_endp - line]);
-    tail_s = string_slice(tail_s, tail_s, 0, tail_s->len - 2); // -2 to peel off newline and the ending semicolon
+    struct jString *tmp = tail_s;               // need this because string_view mallocs
+    tail_s = string_view(tmp, 0, tmp->len - 2); // -2 to peel off newline and the ending semicolon
+    free(tmp);
 
     s[0] = string_cat(s[0], tail_s);
 
