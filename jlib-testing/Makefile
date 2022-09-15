@@ -8,10 +8,10 @@ LIBSRC = ../jlib-string/jlib-string.c
 LIBFLAGS = -I ../jlib-string -I ../jlib-array
 
 
-jl-tests: jl-tests.c $(LIBSRC)
+jlib-testing: jlib-testing.c $(LIBSRC)
 	$(CC) $(CFLAGS) $(LIBFLAGS) -o $@ $^
 
-debug: jl-tests.c $(LIBSRC)
+debug: jlib-testing.c $(LIBSRC)
 	$(CC) $(DEBUGFLAGS) $(LIBFLAGS) -o $@ $^
 
 clean:

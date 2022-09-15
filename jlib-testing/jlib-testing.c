@@ -114,8 +114,11 @@ void extract_functions(const char *src_filepath, const char *dest_filepath)
     return;
 }
 
-void write_main(const char *fns[])
+void write_main(const char *fns[], size_t count)
 {
+    for (size_t i; i < count; i++)
+    {
+    }
 }
 
 char *file_rename(const char *filepath)
