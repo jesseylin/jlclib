@@ -14,18 +14,19 @@ struct jString *string_create(struct jString *s, const char *std_str)
     memcpy(arr_cpy, std_str, len);
 
     s->ch_arr = arr_cpy;
-    s->offset = 0;
     s->len = len;
+    s->offset = 0;
+    s->view = false;
 
     return s;
 }
 
 void string_destroy(struct jString *str)
 {
-    free((void *)str->ch_arr);
-    str->ch_arr = NULL; // avoid double frees
+    if (!str->view)
+        free((void *)str->ch_arr);
     free(str);
-    str = NULL;
+    str = NULL; // avoid double frees
     return;
 }
 
@@ -59,13 +60,14 @@ size_t string_rseekc(const struct jString *s, const char c)
 
 struct jString *string_view(const struct jString *s, const size_t offset, const size_t len)
 {
-    // Returns a new jString which is a slice of s
+    // Returns a new jString which is a slice of s and sets the view flag
     // Caller must free
     struct jString *out = malloc(sizeof(*out));
 
     out->ch_arr = s->ch_arr;
     out->offset = s->offset + offset;
     out->len = len;
+    out->view = true;
 
     return out;
 }
@@ -91,8 +93,9 @@ struct jString *string_insert(struct jString *s1, const struct jString *s2, cons
 
     // initialize new struct
     s1->ch_arr = ch_arr;
-    s1->offset = 0;
     s1->len = len;
+    s1->offset = 0;
+    s1->view = 0;
 
     return s1;
 }

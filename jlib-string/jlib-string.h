@@ -1,10 +1,12 @@
 #include <stddef.h>
+#include <stdbool.h>
 
 struct jString
 {
     const char *ch_arr;
     size_t offset;
     size_t len;
+    bool view;
 };
 
 struct jString *string_create(struct jString *s, const char *std_str);
