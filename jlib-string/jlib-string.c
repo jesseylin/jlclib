@@ -9,6 +9,7 @@
 /* Small library for string-building. Note the internal implementation deals with char arrays which are not null-terminated. */
 struct jString *string_create(struct jString *s, const char *std_str)
 {
+    /* Initializes a jString from a char * null-terminated string by copying */
     const size_t len = strlen(std_str);
     char *arr_cpy = malloc(len * sizeof(*arr_cpy));
     memcpy(arr_cpy, std_str, len);
@@ -35,9 +36,9 @@ char *string_realize(char *c, const struct jString *s)
     /* Copies jString into a null-terminated char * */
     if (memcpy(c, s->ch_arr + s->offset, s->len * sizeof(*s->ch_arr)))
     {
-    c[s->len] = '\0';
-    return c;
-}
+        c[s->len] = '\0';
+        return c;
+    }
     else
     {
         return NULL;
@@ -85,7 +86,9 @@ struct jString *string_view(struct jString *s1, const struct jString *s2, const 
 
 struct jString *string_insert(struct jString *s1, const struct jString *s2, const size_t offset)
 {
-    // declare new struct?
+    /* Inserts s2 into s1 at position offset, mutating s1 */
+
+    // declare new struct
     const size_t len = s1->len + s2->len;
     char *ch_arr = malloc(len * sizeof(*ch_arr));
 
@@ -106,7 +109,7 @@ struct jString *string_insert(struct jString *s1, const struct jString *s2, cons
     s1->ch_arr = ch_arr;
     s1->len = len;
     s1->offset = 0;
-    s1->view = 0;
+    s1->view = false;
 
     return s1;
 }
