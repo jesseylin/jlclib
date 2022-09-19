@@ -107,7 +107,6 @@ int string_run_tests(void)
 {
     /* Simple main for testing purposes */
     const char std_str[] = "Hello world!";
-    char *c;
 
     // string_create
     struct jString *str = malloc(sizeof(*str));
@@ -116,7 +115,7 @@ int string_run_tests(void)
     assert(str->offset == 0);
 
     // string_realize
-    c = malloc((str->len + 1) * sizeof(*c));
+    char *c = malloc((str->len + 1) * sizeof(*c));
     c = string_realize(c, str);
     assert(!strcmp(c, std_str));
     free(c);
@@ -128,18 +127,12 @@ int string_run_tests(void)
     assert(string_rseekc(str, 'l') == 9);
 
     // string_view
-    struct jString *slice = string_view(str, 6, 5);
+    struct jString *slice = malloc(sizeof(*slice));
+    slice = string_view(slice, str, 6, 5);
     c = malloc((slice->len + 1) * sizeof(*c));
     c = string_realize(c, slice);
     assert(!strcmp(c, "world"));
     free(c);
-
-    struct jString *tmp = slice;
-    slice = string_view(tmp, 1, 3);
-    free(tmp);
-    c = malloc((slice->len + 1) * sizeof(*c));
-    c = string_realize(c, slice);
-    assert(!strcmp(c, "orl"));
 
     // string_insert
     struct jString *str1 = malloc(sizeof(*str1));
