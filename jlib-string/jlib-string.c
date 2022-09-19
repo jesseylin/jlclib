@@ -21,22 +21,27 @@ struct jString *string_create(struct jString *s, const char *std_str)
     return s;
 }
 
-void string_destroy(struct jString *str)
+void string_destroy(struct jString *s)
 {
-    if (!str->view)
-        free((void *)str->ch_arr);
-    free(str);
-    str = NULL; // avoid double frees
+    if (!s->view)
+        free((void *)s->ch_arr); // frees the original ch_arr
+    free(s);
+    s = NULL; // avoid double frees
     return;
 }
 
 char *string_realize(char *c, const struct jString *s)
 {
-    // caller responsible for allocating c
-    memcpy(c, s->ch_arr + s->offset, s->len * sizeof(*s->ch_arr));
+    /* Copies jString into a null-terminated char * */
+    if (memcpy(c, s->ch_arr + s->offset, s->len * sizeof(*s->ch_arr)))
+    {
     c[s->len] = '\0';
-
     return c;
+}
+    else
+    {
+        return NULL;
+    }
 }
 
 size_t string_seekc(const struct jString *s, const char c)
@@ -47,14 +52,22 @@ size_t string_seekc(const struct jString *s, const char c)
 
 size_t string_rseekc(const struct jString *s, const char c)
 {
-    char *x = malloc(s->len * sizeof(*x) + 1);
+    char *x;
+    const size_t sz = s->len * sizeof(*x) + 1;
+    x = malloc(sz);
+
+    if (x == NULL)
+    {
+        fprintf(stderr, "Could not allocate %zu bytes.\n", sz);
+        abort();
+    }
     x = string_realize(x, s);
 
     const char *const p = strrchr(x, c);
     const ptrdiff_t ind = p - x;
     assert(p - x >= 0);
-
     free(x);
+
     return ind;
 }
 
