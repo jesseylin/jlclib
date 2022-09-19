@@ -58,18 +58,16 @@ size_t string_rseekc(const struct jString *s, const char c)
     return ind;
 }
 
-struct jString *string_view(const struct jString *s, const size_t offset, const size_t len)
+struct jString *string_view(struct jString *s1, const struct jString *s2, const size_t offset, const size_t len)
 {
-    // Returns a new jString which is a slice of s and sets the view flag
-    // Caller must free
-    struct jString *out = malloc(sizeof(*out));
+    /* Returns s1 which is a slice of s2 and sets the view flag */
 
-    out->ch_arr = s->ch_arr;
-    out->offset = s->offset + offset;
-    out->len = len;
-    out->view = true;
+    s1->ch_arr = s2->ch_arr;
+    s1->offset = s2->offset + offset;
+    s1->len = len;
+    s1->view = true;
 
-    return out;
+    return s1;
 }
 
 struct jString *string_insert(struct jString *s1, const struct jString *s2, const size_t offset)
